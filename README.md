@@ -1,3 +1,3 @@
 # PowerShell
 
-Scripts for automating Windows virtual machines routines in Azure Cloud
+Scripts for automating Windows virtual machines routines in AWS or Azure Cloud.
