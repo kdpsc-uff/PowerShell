@@ -45,47 +45,47 @@ function controller
         
         $logFile = "C:\<path-to-scripts>\copyMoveFiles.log"
 
-		    $hoursNow = Get-Date -Format "yyyy/MM/dd HH:mm"
+        $hoursNow = Get-Date -Format "yyyy/MM/dd HH:mm"
         
         $pathFiles = Get-ChildItem -Path "$src" | Select-Object -ExpandProperty FullName
 		
-		ForEach($pathFile in $pathFiles)
-		{
-		    $lastFile = "$pathFile" | %{ $_.Split('\')[3]; }
-	    
-		    if(!(Test-Path -Path $dest\$lastFile))
+        ForEach($pathFile in $pathFiles)
         {
-            if ("$comm".equals('copy'))
-			      {
-			          Try
-				        {
-				            Copy-Item -Path "$pathFile" -Destination "$dest"
-					          echo "Copy file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
-						        testHash $pathFile $dest\$lastFile
-					      } 
-				        Catch
-				        {
-				            echo "Copy file error at $hoursNow"`n`n 1>> "$logFile"
-					          exit
-				        }
-			      } 
-			      elseif ("$comm".equals('move'))
+            $lastFile = "$pathFile" | %{ $_.Split('\')[3]; }
+
+            if(!(Test-Path -Path $dest\$lastFile))
             {
-                Try
-				        {
-				            Move-Item -Path "$pathFile" -Destination "$dest"
-					          echo "Move file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
-						        testHash E:\<path-to-files>\$lastfile $dest\$lastFile
-				        } 
-				        Catch
-				        {
-				            echo "Move file error at $hoursNow"`n`n 1>> "$logFile"
-				    	      exit
-				        }
-            }					   
-	      }
+                if ("$comm".equals('copy'))
+                {
+                    Try
+                    {
+                        Copy-Item -Path "$pathFile" -Destination "$dest"
+                        echo "Copy file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
+                        testHash $pathFile $dest\$lastFile
+                    } 
+                    Catch
+                    {
+                        echo "Copy file error at $hoursNow"`n`n 1>> "$logFile"
+                        exit
+                    }
+                } 
+                elseif ("$comm".equals('move'))
+                {
+                    Try
+                    {
+                        Move-Item -Path "$pathFile" -Destination "$dest"
+                        echo "Move file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
+                        testHash E:\<path-to-files>\$lastfile $dest\$lastFile
+                    } 
+                    Catch
+                    {
+                        echo "Move file error at $hoursNow"`n`n 1>> "$logFile"
+                        exit
+                    }
+                }					   
+            }
+        }
     }
-}
 
     $credUser = "**********"
     $credPass = "****************"
