@@ -23,47 +23,69 @@ function controller
 {
     function model($src, $dest, $comm)
     {
-        $logFile = "C:\<path-to-scripts>\copyMoveFiles.log"
-        
-        $pathFiles = Get-ChildItem -Path "$src" | Select-Object -ExpandProperty FullName
-        
-        ForEach($pathFile in $pathFiles)
+        function testHash($orig, $dest)
         {
-            $lastFile = "$pathFile" | %{ $_.Split('\')[3]; }
-
-            $hoursNow = Get-Date -Format "yyyy/MM/dd HH:mm"
-
-            if(!(Test-Path -Path $dest\$lastFile))
+            $hashOrig = (Get-Filehash "$orig" -Algorithm MD5).Hash
+            $hashDest = (Get-Filehash "$dest" -Algorithm MD5).Hash
+            
+            if ($hashOrig -ne $hashDest)
             {
-                if ("$comm".equals('copy'))
-                {
-                    Try
-                    {
-                        Copy-Item -Path "$pathFile" -Destination "$dest"
-                        echo "Copy file $lastFile success at $hoursNow" 1>> "$logFile"
-                    } 
-                    Catch
-                    {
-                        echo "Copy file error at $hoursNow" 1>> "$logFile"
-                        exit
-                    }
-                } 
-                elseif ("$comm".equals('move'))
-                {
-                    Try
-                    {
-                        Move-Item -Path "$pathFile" -Destination "$dest"
-                        echo "Move file $lastFile success at $hoursNow" 1>> "$logFile"
-                    } 
-                    Catch
-                    {
-                        echo "Move file error at $hoursNow" 1>> "$logFile"
-                        exit
-                    }
-                }
+                echo "The MD5 sum of file $orig is $hashOrig." 1>> "$logfile"
+                echo "The MD5 sum of file $dest is $hashDest." 1>> "$logfile"
+                echo "The MD5 sum of file $orig and $dest aren't equals!"`n`n 1>> "$logFile"
+                exit
+            }
+            else
+            {
+                echo "The MD5 sum of file $orig is $hashOrig." 1>> "$logfile"
+                echo "The MD5 sum of file $dest is $hashDest." 1>> "$logfile"
+                echo "The MD5 sum of file $orig and $dest are equals."`n`n 1>> "$logFile"
             }
         }
+        
+        $logFile = "C:\<path-to-scripts>\copyMoveFiles.log"
+
+		    $hoursNow = Get-Date -Format "yyyy/MM/dd HH:mm"
+        
+        $pathFiles = Get-ChildItem -Path "$src" | Select-Object -ExpandProperty FullName
+		
+		ForEach($pathFile in $pathFiles)
+		{
+		    $lastFile = "$pathFile" | %{ $_.Split('\')[3]; }
+	    
+		    if(!(Test-Path -Path $dest\$lastFile))
+        {
+            if ("$comm".equals('copy'))
+			      {
+			          Try
+				        {
+				            Copy-Item -Path "$pathFile" -Destination "$dest"
+					          echo "Copy file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
+						        testHash $pathFile $dest\$lastFile
+					      } 
+				        Catch
+				        {
+				            echo "Copy file error at $hoursNow"`n`n 1>> "$logFile"
+					          exit
+				        }
+			      } 
+			      elseif ("$comm".equals('move'))
+            {
+                Try
+				        {
+				            Move-Item -Path "$pathFile" -Destination "$dest"
+					          echo "Move file $lastFile success at $hoursNow"`n`n 1>> "$logFile"
+						        testHash E:\<path-to-files>\$lastfile $dest\$lastFile
+				        } 
+				        Catch
+				        {
+				            echo "Move file error at $hoursNow"`n`n 1>> "$logFile"
+				    	      exit
+				        }
+            }					   
+	      }
     }
+}
 
     $credUser = "**********"
     $credPass = "****************"
