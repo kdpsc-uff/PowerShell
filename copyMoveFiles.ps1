@@ -1,7 +1,4 @@
 <# 
-                                
-This is my first PowerShell script, created on 2020-10-23.
-So, it shouldn't be anything extraordinary.
 
 This  script was  made to copy  files  released in a folder  as output from  an application to a
 storage disk and then move them to a network maping where these files are consumed by a service.
