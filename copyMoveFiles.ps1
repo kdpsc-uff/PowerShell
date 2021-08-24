@@ -19,6 +19,8 @@ such as a local user on the machine and must be the owner of the share.
 
 #>
 
+param($credUser, $credPass)
+
 function controller
 {
     function model($src, $dest, $comm)
@@ -86,9 +88,6 @@ function controller
             }
         }
     }
-
-    $credUser = "**********"
-    $credPass = "****************"
     
     $pathOrig = "D:\<path-to-files>"
     $pathCopy = "E:\<path-to-files>"
